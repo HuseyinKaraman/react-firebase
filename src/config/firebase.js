@@ -1,8 +1,12 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// import { getAnalytics } from "firebase/analytics";
+import {
+  getAuth,
+  // createUserWithEmailAndPassword,
+  // updateCurrentUser,
+  // signInWithEmailAndPassword,
+} from "firebase/auth";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -13,9 +17,19 @@ const firebaseConfig = {
   storageBucket: "react-firebase-fbaac.appspot.com",
   messagingSenderId: "542908127513",
   appId: "1:542908127513:web:115b4f5dab0bada4d6cd88",
-  measurementId: "G-K6V3QVV4M3"
+  measurementId: "G-K6V3QVV4M3",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const auth = getAuth(app);
+// const analytics = getAnalytics(app); //* for analytics
+
+// export const signUp = async (username, email, password) => {
+//   await createUserWithEmailAndPassword(auth, email, password);
+//   await updateCurrentUser(auth, { displayName: username });
+// };
+
+// export const signIn = async (email, password) => {
+//     await signInWithEmailAndPassword(auth,email,password)
+// };
