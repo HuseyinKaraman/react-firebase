@@ -8,7 +8,9 @@ import {
     // signInWithEmailAndPassword,
 } from "firebase/auth";
 import { collection, getFirestore, onSnapshot, deleteDoc, doc, addDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setProducts } from "../redux/productSlice";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -26,41 +28,38 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 // const analytics = getAnalytics(app); //* for analytics
-export const db = getFirestore(app);
 
-const productsRef = collection(db, "products"); //* for products collection ref
+export const db = getFirestore(app);
+export const productsRef = collection(db, "products"); //* for products collection ref
 // const docRef = doc(db,"products/HfQPUQIIYrRXf84cGWu2"); //* for product doc ref
 
 export const useProductsListener = () => {
-    const [products, setProducts] = useState([]);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         return onSnapshot(productsRef, (snapShot) => { //! return for  unsubscribe from snapshot
-            setProducts(
-                snapShot.docs.map((doc) => {
-                    const data = doc.data();
-                    return { id: doc.id, ...data, createdAt: data.createdAt?.toDate() };
-                })
-            );
+            const docs = snapShot.docs.map((doc) => {
+                const data = doc.data();
+                return { id: doc.id, ...data, createdAt: data.createdAt?.toDate() };
+            });
+            dispatch(setProducts(docs))
         });
-    }, []);
-
-    return products;
+    }, [dispatch]);
 };
 
-export const deleteProduct = (id) => {
-    deleteDoc(doc(db, "products", id));
-};
+// export const deleteProduct = (id) => {
+//     deleteDoc(doc(db, "products", id));
+// };
 
-export const addProduct = () => {
-    const uid = auth.currentUser.uid;
+// export const addProduct = () => {
+//     const uid = auth.currentUser.uid;
 
-    if (!uid) return;
+//     if (!uid) return;
 
-    addDoc(productsRef, {
-        name: "iphone",
-        description: "lorem ipsum",
-        price: 5000,
-        uid,
-    });
-};
+//     addDoc(productsRef, {
+//         name: "iphone",
+//         description: "lorem ipsum",
+//         price: 5000,
+//         uid,
+//     });
+// };
