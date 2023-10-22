@@ -1,13 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
-import {
-    getAuth,
-    // createUserWithEmailAndPassword,
-    // updateCurrentUser,
-    // signInWithEmailAndPassword,
-} from "firebase/auth";
-import { collection, getFirestore, onSnapshot, deleteDoc, doc, addDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { collection, getFirestore, onSnapshot } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setProducts } from "../redux/productSlice";
@@ -28,21 +24,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 // const analytics = getAnalytics(app); //* for analytics
-
 export const db = getFirestore(app);
+export const storage = getStorage(app);
+
+
 export const productsRef = collection(db, "products"); //* for products collection ref
 // const docRef = doc(db,"products/HfQPUQIIYrRXf84cGWu2"); //* for product doc ref
 
+// ! listener :: 
 export const useProductsListener = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        return onSnapshot(productsRef, (snapShot) => { //! return for  unsubscribe from snapshot
+        return onSnapshot(productsRef, (snapShot) => {
+            //! return for  unsubscribe from snapshot
             const docs = snapShot.docs.map((doc) => {
                 const data = doc.data();
                 return { id: doc.id, ...data, createdAt: data.createdAt?.toDate() };
             });
-            dispatch(setProducts(docs))
+            dispatch(setProducts(docs));
         });
     }, [dispatch]);
 };
